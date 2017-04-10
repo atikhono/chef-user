@@ -33,13 +33,14 @@ def load_current_resource
   @non_unique = bool(new_resource.non_unique, node['user']['non_unique'])
   @create_group = bool(new_resource.create_group, node['user']['create_group'])
   @ssh_keygen = bool(new_resource.ssh_keygen, node['user']['ssh_keygen'])
+  @ssh_keypair = bool(new_resource.ssh_keypair, node['user']['ssh_keypair'])
   @group_add = bool(new_resource.groups, node['user']['groups'])
 end
 
 action :create do # ~FC017: LWRP does not notify when updated
   user_resource             :create
   home_dir_resource         :create
-  home_ssh_dir_resource     :create if @ssh_keygen || !new_resource.ssh_keys.empty?
+  home_ssh_dir_resource     :create if @ssh_keygen || @ssh_keypair || !new_resource.ssh_keys.empty?
   authorized_keys_resource  :create
   keygen_resource           :create
   group_resource            :create
